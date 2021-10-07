@@ -1,15 +1,18 @@
-const fs = require("fs-extra");
-const fetch = require("node-fetch");
-const delay = require("delay");
-const _ = require("lodash");
+const fs = require('fs-extra');
+const fetch = require('node-fetch');
+const delay = require('delay');
+const _ = require('lodash');
 
 async function getSteamJSON() {
-  fetch("https://api.steampowered.com/ISteamApps/GetAppList/v0002/?format=json")
-    .then((res) => res.json())
-    .then(async (data) => {
+  fetch('https://api.steampowered.com/ISteamApps/GetAppList/v0002/?format=json')
+    .then(res => res.json())
+    .then(async data => {
       var games = data.applist.apps;
       var totalGames = 0;
       var dir = `${__dirname}/json`;
+      if (!fs.existsSync(dir)) {
+        fs.mkdirSync(dir, 0744);
+      }
       for (let i = 0; i < Math.ceil(games.length / 10000); i++) {
         let current = [];
         for (let j = 0; j < 10000 && totalGames < games.length; j++) {
@@ -38,13 +41,13 @@ async function send(games) {
   for (let i = 0; i < games.length - 1; i++) {
     if (!found > 0) await delay(1.6e3);
     await fetch(`http://localhost:3001/steam/updatebyid/${games[i].appid}`)
-      .then((res) => res.json())
-      .then((data) => {
+      .then(res => res.json())
+      .then(data => {
         if (data.found) {
           found++;
         } else found = 0;
       })
-      .catch((err) => {
+      .catch(err => {
         console.error(err);
         console.log(`Error at id ${games[i].appid}`);
         i--;

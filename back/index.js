@@ -1,6 +1,6 @@
 const _ = require("lodash");
 const express = require("express");
-const Steam = require("../../steamSearchJSON/steamspy");
+const Steam = require("./steamspy");
 const PORT = process.env.PORT || 3001;
 const MONGODB_URL = process.env.MONGO || "mongodb://localhost:27017/gamr";
 const mongoose = require("mongoose");

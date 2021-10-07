@@ -180,7 +180,6 @@ sketch
 # .pnp.*
 
 # End of https://www.toptal.com/developers/gitignore/api/react,node,yarn
-Toucan
-Over 100 word limit
-We’re working to increase this limit and keep load times short. In the meantime, try highlighting up to 100 words at one time to translate.
-Don’t show again
+
+json/
+json.old/
