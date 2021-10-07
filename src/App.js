@@ -62,7 +62,7 @@ function App() {
   });
 
   useEffect(() => {
-    document.title = `no u`;
+    document.title = `GAMR`;
   }, [searchTerm]);
 
   useEffect(() => {
