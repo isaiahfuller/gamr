@@ -15,6 +15,7 @@ import {
 import GameDetails from './GameDetails';
 import fetch from 'node-fetch';
 import SpinnerLoad from './SpinnerLoad';
+const {REACT_APP_SERVER} = process.env
 
 function SearchResults(props) {
   const [loading, setLoading] = useBoolean(true);
@@ -28,7 +29,7 @@ function SearchResults(props) {
     if (resultsData.length === 0) {
       if (props.searchTerm.startsWith('appid:')) {
         let term = props.searchTerm.substr(6);
-        fetch(`http://${window.location.hostname}:3001/steam/appid/${term}`)
+        fetch(`http://${REACT_APP_SERVER}/steam/appid/${term}`)
           .then(res => res.json())
           .then(game => {
             setResultsData([game]);
@@ -37,7 +38,7 @@ function SearchResults(props) {
           .catch(console.error);
       } else {
         fetch(
-          `http://${window.location.hostname}:3001/steam/name/${wordFilter(
+          `http://${REACT_APP_SERVER}/steam/name/${wordFilter(
             props.searchTerm
           )}`
         )

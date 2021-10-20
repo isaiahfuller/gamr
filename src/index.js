@@ -5,11 +5,12 @@ import { HashRouter } from 'react-router-dom';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import * as serviceWorker from './serviceWorker';
+import theme from './theme';
 
 ReactDOM.render(
   <StrictMode>
     <HashRouter>
-      <ColorModeScript />
+      <ColorModeScript initialColorMode={theme.config.initialColorMode} />
       <App />
     </HashRouter>
   </StrictMode>,

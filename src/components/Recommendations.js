@@ -17,6 +17,7 @@ import { ExternalLinkIcon } from '@chakra-ui/icons';
 import React, { useEffect, useReducer, useState } from 'react';
 import { useSwipeable } from 'react-swipeable';
 import SpinnerLoad from './SpinnerLoad';
+const {REACT_APP_SERVER} = process.env
 
 function init(initialCount) {
   return { count: initialCount };
@@ -69,7 +70,7 @@ function Recommendations(props) {
         });
       }
     });
-    fetch(`http://${window.location.hostname}:3001/steam/recc`, {
+    fetch(`http://${REACT_APP_SERVER}/steam/recc`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -86,6 +87,13 @@ function Recommendations(props) {
   }, [sortedDevs, devs, tags]);
 
   if (isLoading) return <SpinnerLoad />;
+  else if(games.length === 0){
+    return(
+      <Container>
+        <Heading>No results</Heading>
+      </Container>
+    )
+  }
   else {
     return (
       <Container id="game-details" {...handlers}>
