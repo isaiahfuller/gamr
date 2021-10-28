@@ -6,6 +6,7 @@ import {
   useBoolean,
   Text,
   VStack,
+  useColorMode
 } from '@chakra-ui/react';
 import Search from './components/Search';
 import SearchResults from './components/SearchResults';
@@ -19,6 +20,8 @@ function App() {
   const [tags, setTags] = useState();
   const [devs, setDevs] = useState();
   const [appid, setAppid] = useState();
+  const { colorMode, toggleColorMode } = useColorMode();
+  if(colorMode === "light") toggleColorMode();
 
   function handleBackground(img) {
     setBackgroundImage(img);

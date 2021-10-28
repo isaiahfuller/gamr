@@ -5,12 +5,12 @@ import {
   FormControl,
   Button,
   HStack,
-  useColorMode
+  // useColorMode
 } from '@chakra-ui/react';
 
 function Search(props) {
-  const { colorMode, toggleColorMode } = useColorMode();
-  if(colorMode === "light") toggleColorMode();
+  // const { colorMode, toggleColorMode } = useColorMode();
+  // if(colorMode === "light") toggleColorMode();
 
   function handleSubmit(event) {
     event.preventDefault();
