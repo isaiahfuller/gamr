@@ -1,22 +1,22 @@
 require('dotenv').config();
-const _ = require("lodash");
-const express = require("express");
-const Steam = require("./steamspy");
+const _ = require('lodash');
+const express = require('express');
+const Steam = require('./steamspy');
 const PORT = process.env.PORT || 3001;
-const MONGODB_URL = process.env.MONGO || "mongodb://localhost:27017/gamr";
-const mongoose = require("mongoose");
-const Update = require("./import");
+const MONGODB_URL = process.env.MONGO || 'mongodb://localhost:27017/gamr';
+const mongoose = require('mongoose');
+const Update = require('./import');
 const Schema = mongoose.Schema;
 
-var status = "working";
+var status = 'working';
 
 setInterval(update, 24 * 3.6e6);
 
 async function update() {
-  if (status !== "updating") {
-    status = "updating";
+  if (status !== 'updating') {
+    status = 'updating';
     await Update.getSteamJSON();
-    status = "working";
+    status = 'working';
   }
 }
 
@@ -24,7 +24,7 @@ update();
 
 function relevanceSort(array, searchTerm) {
   searchTerm = searchTerm.trim();
-  let scoreArray = _.filter(array, (o) => {
+  let scoreArray = _.filter(array, o => {
     return o.positive + o.negative > 0;
   });
 
@@ -36,14 +36,14 @@ function relevanceSort(array, searchTerm) {
     else if (firstScore === secondScore) return 0;
   });
 
-  let startsWithArray = _.filter(scoreSortedArray, (o) => {
+  let startsWithArray = _.filter(scoreSortedArray, o => {
     return o.name
       .trim()
       .toLowerCase()
-      .startsWith(searchTerm.toLowerCase() + " ");
+      .startsWith(searchTerm.toLowerCase() + ' ');
   });
 
-  let nameSortedArray = _.filter(scoreSortedArray, (o) => {
+  let nameSortedArray = _.filter(scoreSortedArray, o => {
     return o.name.trim().toLowerCase().startsWith(searchTerm.toLowerCase());
   });
 
@@ -67,9 +67,9 @@ mongoose.connect(MONGODB_URL, {
 
 const db = mongoose.connection;
 
-db.on("error", console.error.bind(console, "connection error:"));
-db.once("open", function () {
-  console.log("DB connected");
+db.on('error', console.error.bind(console, 'connection error:'));
+db.once('open', function () {
+  console.log('DB connected');
 });
 const steamGameSchema = new mongoose.Schema({
   appid: Number,
@@ -98,37 +98,41 @@ const steamGameSchema = new mongoose.Schema({
   invalid: Boolean,
 });
 
-const SteamGames = mongoose.model("games", steamGameSchema);
+const SteamGames = mongoose.model('games', steamGameSchema);
 
 const app = express();
 
 app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "*");
+  res.header('Access-Control-Allow-Origin', '*');
   res.header(
-    "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content-Type, Accept"
+    'Access-Control-Allow-Headers',
+    'Origin, X-Requested-With, Content-Type, Accept'
   );
   next();
 });
 app.use(express.json());
 
-app.get("/api/status", (req, res) => {
+app.get('/api/status', (req, res) => {
   res.json({ message: status });
 });
 
-app.get("/steam/updatebyid/:id", (req, res) => {
+app.get('/steam/updatebyid/:id', (req, res) => {
+  var params = req.params.id.split('&');
+  var force = false;
+  if (params[1] === 'force') force = true;
   var now = new Date();
-  var id = req.params.id;
+  var id = params[0];
   SteamGames.findOne({ appid: id }, (err, searchedGame) => {
     if (err) return console.error(err);
     if (
       !searchedGame ||
       now.getDate() - 7 > new Date(searchedGame.last_updated).getDate() ||
       !searchedGame.last_updated ||
-      searchedGame.invalid
+      searchedGame.invalid ||
+      force
     ) {
       Steam.getGameByID(id)
-        .then((game) => {
+        .then(game => {
           if (game) {
             if (searchedGame) {
               var result = Object.assign(game, {
@@ -136,7 +140,7 @@ app.get("/steam/updatebyid/:id", (req, res) => {
                 last_updated: now,
               });
               SteamGames.findOneAndUpdate({ appid: id }, result)
-                .then((updated) => {
+                .then(updated => {
                   // console.log("Updated", id);
                   res.json(game);
                   return game;
@@ -149,12 +153,12 @@ app.get("/steam/updatebyid/:id", (req, res) => {
                   last_updated: now,
                 })
               );
-              result.save((err) => {
+              result.save(err => {
                 if (err) {
-                  res.set("Connection", "close");
+                  res.set('Connection', 'close');
                   return console.error(err);
                 }
-                res.json({ update: "success" });
+                res.json({ update: 'success' });
                 return game;
               });
             }
@@ -163,7 +167,7 @@ app.get("/steam/updatebyid/:id", (req, res) => {
         .catch(console.error);
     } else {
       // console.log(`Found game with id ${id}`);
-      res.set("Connection", "close");
+      res.set('Connection', 'close');
       let found = Object.assign({ found: true }, searchedGame);
       res.json(found);
       return searchedGame;
@@ -171,7 +175,7 @@ app.get("/steam/updatebyid/:id", (req, res) => {
   });
 });
 
-app.get("/steam/appid/:id", (req, res) => {
+app.get('/steam/appid/:id', (req, res) => {
   var now = new Date();
   var id = req.params.id;
   SteamGames.findOne({ appid: id }, (err, searchedGame) => {
@@ -180,18 +184,18 @@ app.get("/steam/appid/:id", (req, res) => {
       res.status(404);
     }
     console.log(`Found game with id ${id}`);
-    res.set("Connection", "close");
+    res.set('Connection', 'close');
     let found = Object.assign({ found: true }, searchedGame);
     res.json(found);
     return searchedGame;
   });
 });
 
-app.get("/steam/name/:name", (req, res) => {
+app.get('/steam/name/:name', (req, res) => {
   try {
     SteamGames.find({
-      name: new RegExp(`${req.params.name}+`, "i"),
-      "steam.type": "game",
+      name: new RegExp(`${req.params.name}+`, 'i'),
+      'steam.type': 'game',
     })
       .limit(100)
       .exec((err, games) => {
@@ -204,30 +208,33 @@ app.get("/steam/name/:name", (req, res) => {
   }
 });
 
-app.post("/steam/recc", (req, res) => {
+app.post('/steam/recc', (req, res) => {
   const { developer, publisher, tags, appid } = req.body;
   let queryBase = {
-    "steam.type": "game",
+    'steam.type': 'game',
     appid: { $not: { $eq: appid } },
   };
   if (developer.length > 0)
     queryBase = Object.assign(queryBase, {
-      "steam.developers": { $in: developer },
+      'steam.developers': { $in: developer },
     });
   if (publisher.length > 0)
     queryBase = Object.assign(queryBase, {
-      "steam.publishers": { $in: publisher },
+      'steam.publishers': { $in: publisher },
     });
-  tags.forEach((tag) => {
+  tags.forEach(tag => {
     queryBase = Object.assign(queryBase, {
       [`tags.${tag}`]: { $exists: true },
     });
   });
   try {
-    SteamGames.find(queryBase).sort({[`tags.${tags[0]}`]: -1}).limit(100).exec((err, games) => {
-      if (err) console.error(err);
-      res.send(games).status(200);
-    });
+    SteamGames.find(queryBase)
+      .sort({ [`tags.${tags[0]}`]: -1 })
+      .limit(100)
+      .exec((err, games) => {
+        if (err) console.error(err);
+        res.send(games).status(200);
+      });
   } catch (error) {
     console.error(error);
     res.status(500);

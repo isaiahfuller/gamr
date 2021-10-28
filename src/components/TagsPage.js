@@ -18,7 +18,7 @@ import fetch from 'node-fetch';
 import { React, useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import SpinnerLoad from './SpinnerLoad';
-const {REACT_APP_SERVER} = process.env
+const { REACT_APP_SERVER } = process.env;
 
 function useQuery() {
   return new URLSearchParams(useLocation().search);
@@ -33,9 +33,7 @@ function TagsPage(props) {
   const [isLoading, setIsLoading] = useBoolean(true);
   const [tagsSet, setTagsSet] = useBoolean(false);
   const [activeDevs, setActiveDevs] = useState([]);
-  const url = `http://${REACT_APP_SERVER}/steam/appid/${query.get(
-    'appid'
-  )}`;
+  const url = `http://${REACT_APP_SERVER}/steam/appid/${query.get('appid')}`;
 
   useEffect(() => {
     fetch(url)
