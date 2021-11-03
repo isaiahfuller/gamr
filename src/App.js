@@ -6,7 +6,6 @@ import {
   useBoolean,
   Text,
   VStack,
-  useColorMode
 } from '@chakra-ui/react';
 import Search from './components/Search';
 import SearchResults from './components/SearchResults';
@@ -20,8 +19,6 @@ function App() {
   const [tags, setTags] = useState();
   const [devs, setDevs] = useState();
   const [appid, setAppid] = useState();
-  const { colorMode, toggleColorMode } = useColorMode();
-  if(colorMode === "light") toggleColorMode();
 
   function handleBackground(img) {
     setBackgroundImage(img);
@@ -44,6 +41,23 @@ function App() {
           position: 'fixed',
           top: '40%',
         },
+        '.tags-select': {
+          paddingTop: '5',
+          paddingBottom: '5',
+        },
+        '.continue-button': {
+          paddingBottom: '5',
+        },
+        '#recommendation-buttons': {
+          bottom: '0',
+          left: '0',
+          zIndex: '1000',
+        },
+        '#recommendation-tags': {
+          minHeight: '10vh',
+          overflow: 'none',
+          zIndex: '900',
+        },
         body: {
           backgroundColor: '#252930',
           backgroundImage: backgroundImage !== '' ? backgroundImage : null,
@@ -65,7 +79,12 @@ function App() {
       <Router>
         <Switch>
           <Route path="/recommendations">
-            <Recommendations tags={tags} devs={devs} appid={appid} />
+            <Recommendations
+              tags={tags}
+              devs={devs}
+              appid={appid}
+              setBackgroundImage={handleBackground}
+            />
           </Route>
           <Route path="/tags">
             <TagsPage

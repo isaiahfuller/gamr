@@ -7,6 +7,7 @@ async function getSteamJSON() {
   fetch('https://api.steampowered.com/ISteamApps/GetAppList/v0002/?format=json')
     .then(res => res.json())
     .then(async data => {
+      console.log("Update started")
       var games = data.applist.apps;
       var totalGames = 0;
       var dir = `${__dirname}/json`;
@@ -22,6 +23,7 @@ async function getSteamJSON() {
         fs.writeFileSync(`${dir}/${i}.json`, JSON.stringify({ current }));
       }
       await main(dir);
+      console.log("Update complete")
     });
 }
 

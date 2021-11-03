@@ -1,16 +1,19 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   Input,
   Container,
   FormControl,
   Button,
   HStack,
-  // useColorMode
+  useColorMode
 } from '@chakra-ui/react';
 
 function Search(props) {
-  // const { colorMode, toggleColorMode } = useColorMode();
-  // if(colorMode === "light") toggleColorMode();
+  const { colorMode, toggleColorMode } = useColorMode();
+
+  useEffect(() => {
+    if(colorMode === "light") toggleColorMode();
+  })
 
   function handleSubmit(event) {
     event.preventDefault();
@@ -20,6 +23,7 @@ function Search(props) {
     if (props.activeSearch) props.setActiveSearch.off();
     props.setSearchTerm(e.target.value);
   }
+
   return (
     <Container className="search-container" maxWidth="80ch">
       <form onSubmit={handleSubmit}>

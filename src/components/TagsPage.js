@@ -47,35 +47,40 @@ function TagsPage(props) {
   }, [url]);
 
   function tagList(tags, firstSet, secondSet, icon) {
-    return (
-      <Box>
-        {Object.keys(tags).map((tag, index) => {
-          const handleTagClick = e => {
-            firstSet(prev => {
-              prev[`${tag}`] = tags[`${tag}`];
-              return prev;
-            });
-            secondSet(prev => {
-              const { [tag]: removed, ...tempArray } = prev;
-              return tempArray;
-            });
-          };
-          return (
-            <Tag
-              onClick={handleTagClick}
-              className="game-tag"
-              margin="1"
-              variant={icon ? 'subtle' : 'solid'}
-              colorScheme={icon ? 'gray' : 'green'}
-              size={icon ? 'md' : 'lg'}
-            >
-              <TagLeftIcon as={icon ? AddIcon : CloseIcon} />
-              <TagLabel>{tag}</TagLabel>
-            </Tag>
-          );
-        })}
-      </Box>
-    );
+    if (Object.keys(tags).length > 0) {
+      return (
+        <Box className="tags-select">
+          {Object.keys(tags).map((tag, index) => {
+            const handleTagClick = e => {
+              firstSet(prev => {
+                prev[`${tag}`] = tags[`${tag}`];
+                return prev;
+              });
+              secondSet(prev => {
+                const { [tag]: removed, ...tempArray } = prev;
+                return tempArray;
+              });
+            };
+            return (
+              <Tag
+                onClick={handleTagClick}
+                className="game-tag"
+                margin="1"
+                variant={icon ? 'subtle' : 'solid'}
+                colorScheme={icon ? 'gray' : 'green'}
+                size={icon ? 'md' : 'lg'}
+                key={index}
+              >
+                <TagLeftIcon as={icon ? AddIcon : CloseIcon} />
+                <TagLabel>{tag}</TagLabel>
+              </Tag>
+            );
+          })}
+        </Box>
+      );
+    } else {
+      return null;
+    }
   }
 
   if (tagsSet) {
@@ -108,7 +113,7 @@ function TagsPage(props) {
         <Stack margin="5">
           {gameDetails.steam[0].developers.map((dev, i) => {
             return (
-              <Checkbox value={`dev-${dev}`} onChange={handleCheckbox}>
+              <Checkbox value={`dev-${dev}`} onChange={handleCheckbox} key={i}>
                 {dev}
               </Checkbox>
             );
@@ -118,14 +123,14 @@ function TagsPage(props) {
         <Stack margin="5">
           {gameDetails.steam[0].publishers.map((dev, i) => {
             return (
-              <Checkbox value={`pub-${dev}`} onChange={handleCheckbox}>
+              <Checkbox value={`pub-${dev}`} onChange={handleCheckbox} key={i}>
                 {dev}
               </Checkbox>
             );
           })}
         </Stack>
         <Flex direction="row-reverse" margin="1">
-          <Link to="/recommendations">
+          <Link to="/recommendations" className="continue-button">
             <Button onClick={handleButtonClick}>Continue</Button>
           </Link>
         </Flex>
@@ -136,23 +141,35 @@ function TagsPage(props) {
       setTagsSet.on();
       stateTags(activeTags);
     };
+    let activeTagList = tagList(
+      activeTags,
+      setInactiveTags,
+      setActiveTags,
+      false
+    );
+    let inactiveTagList = tagList(
+      inactiveTags,
+      setActiveTags,
+      setInactiveTags,
+      true
+    );
     return (
       <Container id="game-details">
         <Flex direction="column">
-          <Heading>Which tags are important to you?</Heading>
+          <Heading paddingTop="5">Which tags are important to you?</Heading>
           <Image
             src={gameDetails.steam[0].header_image}
             alt={gameDetails.name}
             margin="5"
           />
         </Flex>
-        {tagList(activeTags, setInactiveTags, setActiveTags, false)}
+        {activeTagList}
         {Object.keys(activeTags).length && Object.keys(inactiveTags).length ? (
           <Divider />
         ) : null}
-        {tagList(inactiveTags, setActiveTags, setInactiveTags, true)}
+        {inactiveTagList}
         {Object.keys(activeTags).length > 0 ? (
-          <Flex direction="row-reverse" margin="1">
+          <Flex className="continue-button" direction="row-reverse" margin="1">
             <Button onClick={handleButtonClick}>Continue</Button>
           </Flex>
         ) : null}

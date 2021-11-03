@@ -17,7 +17,7 @@ import { ExternalLinkIcon } from '@chakra-ui/icons';
 import React, { useEffect, useReducer, useState } from 'react';
 import { useSwipeable } from 'react-swipeable';
 import SpinnerLoad from './SpinnerLoad';
-const {REACT_APP_SERVER} = process.env
+const { REACT_APP_SERVER } = process.env;
 
 function init(initialCount) {
   return { count: initialCount };
@@ -38,15 +38,13 @@ function reducer(state, action) {
 }
 
 function Recommendations(props) {
-  const { tags, devs, appid } = props;
+  const { tags, devs, appid, setBackgroundImage } = props;
   const [games, setGames] = useState();
   const [isLoading, setIsLoading] = useBoolean(true);
   const [state, dispatch] = useReducer(reducer, 0, init);
   const handlers = useSwipeable({
     onSwipedRight: e => dispatch({ type: 'decrement' }),
     onSwipedLeft: e => dispatch({ type: 'increment' }),
-    onSwiping: e => {},
-    onSwipedDown: e => {},
     trackMouse: true,
     preventDefaultTouchmoveEvent: true,
   });
@@ -86,18 +84,27 @@ function Recommendations(props) {
       }); // eslint-disable-next-line
   }, [sortedDevs, devs, tags]);
 
+  useEffect(() => {
+    if (games) setBackgroundImage(games[state.count].steam[0].background);
+  }, [state.count, games, setBackgroundImage]);
+
   if (isLoading) return <SpinnerLoad />;
-  else if(games.length === 0){
-    return(
+  else if (games.length === 0) {
+    return (
       <Container>
         <Heading>No results</Heading>
       </Container>
-    )
-  }
-  else {
+    );
+  } else {
     return (
-      <Container id="game-details" {...handlers}>
-        <Flex direction="column">
+      <Container maxW="40em">
+        <Flex
+          id="game-details"
+          {...handlers}
+          direction="column"
+          minHeight="100%"
+          justify="center"
+        >
           <Link
             href={`https://store.steampowered.com/app/${
               games[state.count].appid
@@ -112,24 +119,36 @@ function Recommendations(props) {
           </Link>
           <Image
             src={games[state.count].steam[0].header_image}
-            alt={games[state.count].name}
-            margin="5"
+            alt={games[state.count].name + ' header'}
+            paddingLeft="5"
+            paddingRight="5"
+            margin="auto"
+            marginLeft="5"
+            marginRight="5"
+            alignSelf="center"
             style={{ touchAction: 'none' }}
           />
-          <Text margin="3">
+          <Text paddingTop="1" margin="auto" marginLeft="5" marginRight="5">
             {games[state.count].steam[0].short_description}
           </Text>
+          <Divider marginTop="2" marginBottom="2" />
+          <Box id="recommendation-tags">
+            {Object.keys(games[state.count].tags).map((tag, i) => {
+              return (
+                <Tag margin="1" key={i} size="sm">
+                  <TagLabel>{tag}</TagLabel>
+                </Tag>
+              );
+            })}
+          </Box>
         </Flex>
-        <Box margin="1" style={{ touchAction: 'none' }}>
-          {Object.keys(games[state.count].tags).map((tag, i) => {
-            return (
-              <Tag margin="1">
-                <TagLabel>{tag}</TagLabel>
-              </Tag>
-            );
-          })}
-        </Box>
-        <ButtonGroup isAttached width="100%" marginTop="5" marginBottom="5">
+        <ButtonGroup
+          id="recommendation-buttons"
+          isAttached
+          width="100%"
+          marginTop="5"
+          marginBottom="5"
+        >
           {state.count === 0 ? (
             <Button
               isDisabled
