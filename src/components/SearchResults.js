@@ -31,20 +31,22 @@ function SearchResults(props) {
         let appid = props.searchTerm.split(':')[1];
         window.location.href = `tags?appid=${appid}&direct`;
       } else {
-        fetch(
-          `http://${REACT_APP_SERVER}/steam/name/${wordFilter(
-            props.searchTerm
-          )}`
-        )
-          .then(res => res.json())
-          .then(games => {
-            let gameString = JSON.stringify(games)
-              .replace(/．/g, '.')
-              .replace(/＄/g, '$');
-            setResultsData(JSON.parse(gameString));
-            setLoading.off();
-          })
-          .catch(console.error);
+        if (props.searchTerm === '') setLoading.off();
+        else
+          fetch(
+            `http://${REACT_APP_SERVER}/steam/name/${wordFilter(
+              props.searchTerm
+            )}`
+          )
+            .then(res => res.json())
+            .then(games => {
+              let gameString = JSON.stringify(games)
+                .replace(/．/g, '.')
+                .replace(/＄/g, '$');
+              setResultsData(JSON.parse(gameString));
+              setLoading.off();
+            })
+            .catch(console.error);
       }
     }
   }, [props.searchTerm, setLoading, resultsData]);

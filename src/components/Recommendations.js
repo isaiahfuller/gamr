@@ -11,8 +11,10 @@ import {
   ButtonGroup,
   Button,
   Divider,
+  Spacer,
   Link,
 } from '@chakra-ui/react';
+import { Link as RouterLink } from 'react-router-dom';
 import { ExternalLinkIcon } from '@chakra-ui/icons';
 import React, { useEffect, useReducer, useState } from 'react';
 import { useSwipeable } from 'react-swipeable';
@@ -38,7 +40,7 @@ function reducer(state, action) {
 }
 
 function Recommendations(props) {
-  const { tags, devs, appid, setBackgroundImage } = props;
+  const { tags, devs, appid, setBackgroundImage, width } = props;
   const [games, setGames] = useState();
   const [isLoading, setIsLoading] = useBoolean(true);
   const [state, dispatch] = useReducer(reducer, 0, init);
@@ -54,6 +56,13 @@ function Recommendations(props) {
   });
 
   useEffect(() => {
+    let bodyTags = tags;
+    if (!Array.isArray(tags)) bodyTags = Object.keys(bodyTags);
+    let body = Object.assign(sortedDevs, {
+      tags: bodyTags,
+      appid: appid,
+    });
+    // Split developers and publishers into their own arrays
     devs.forEach(dev => {
       if (dev.includes('dev-')) {
         setSortedDevs(prev => {
@@ -68,14 +77,13 @@ function Recommendations(props) {
         });
       }
     });
+    // Get list of games to recommend. All at once even though displayed one by one
     fetch(`http://${REACT_APP_SERVER}/steam/recc`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(
-        Object.assign(sortedDevs, { tags: Object.keys(tags), appid: appid })
-      ),
+      body: JSON.stringify(body),
     })
       .then(res => res.json())
       .then(game => {
@@ -84,6 +92,7 @@ function Recommendations(props) {
       }); // eslint-disable-next-line
   }, [sortedDevs, devs, tags]);
 
+  // Set the background image to match the current game's on Steam.
   useEffect(() => {
     if (games) setBackgroundImage(games[state.count].steam[0].background);
   }, [state.count, games, setBackgroundImage]);
@@ -117,6 +126,9 @@ function Recommendations(props) {
               <ExternalLinkIcon mx="2px" />
             </Heading>
           </Link>
+          <Text fontSize="xs" as="i" padding="1">
+            {games[state.count].developer} • {games[state.count].publisher}
+          </Text>
           <Image
             src={games[state.count].steam[0].header_image}
             alt={games[state.count].name + ' header'}
@@ -131,16 +143,26 @@ function Recommendations(props) {
           <Text paddingTop="1" margin="auto" marginLeft="5" marginRight="5">
             {games[state.count].steam[0].short_description}
           </Text>
-          <Divider marginTop="2" marginBottom="2" />
-          <Box id="recommendation-tags">
-            {Object.keys(games[state.count].tags).map((tag, i) => {
-              return (
-                <Tag margin="1" key={i} size="sm">
-                  <TagLabel>{tag}</TagLabel>
-                </Tag>
-              );
-            })}
-          </Box>
+          <Divider marginY="1" />
+          <Flex direction={width > 700 ? 'row' : 'column'}>
+            {Object.keys(games[state.count].tags).length > 0 ? (
+              <Box id="recommendation-tags">
+                {Object.keys(games[state.count].tags).map((tag, i) => {
+                  return (
+                    <Tag margin="1" key={i} size="sm">
+                      <TagLabel>{tag}</TagLabel>
+                    </Tag>
+                  );
+                })}
+              </Box>
+            ) : null}
+            <Spacer />
+            <Box padding="1" marginY="auto" align="right">
+              <RouterLink to={`/tags?appid=${games[state.count].appid}`}>
+                <Button colorScheme="blue">Search</Button>
+              </RouterLink>
+            </Box>
+          </Flex>
         </Flex>
         <ButtonGroup
           id="recommendation-buttons"

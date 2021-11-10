@@ -23,9 +23,7 @@ function GameDetails(props) {
   }, [colorMode, props, toggleColorMode]);
 
   var tags = Object.keys(props.game.tags);
-  function handleClick() {
-    // window.location.replace();
-  }
+  
   return (
     <Container>
       <Flex className="active-game" direction="column" paddingX="5">
@@ -46,7 +44,7 @@ function GameDetails(props) {
       <br />
       <Flex direction="row-reverse">
         <Link to={`/tags?appid=${props.game.appid}`}>
-          <Button onClick={handleClick}>Select Game</Button>
+          <Button>Select Game</Button>
         </Link>
       </Flex>
     </Container>

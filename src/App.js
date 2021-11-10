@@ -11,14 +11,16 @@ import Search from './components/Search';
 import SearchResults from './components/SearchResults';
 import TagsPage from './components/TagsPage';
 import Recommendations from './components/Recommendations';
+import useWindowDimensions from './hooks/windowDimensions';
 
 function App() {
-  const [searchTerm, setSearchTerm] = useState();
-  const [backgroundImage, setBackgroundImage] = useState('');
+  const [searchTerm, setSearchTerm] = useState("");
+  const [backgroundImage, setBackgroundImage] = useState("");
   const [activeSearch, setActiveSearch] = useBoolean(false);
-  const [tags, setTags] = useState();
-  const [devs, setDevs] = useState();
-  const [appid, setAppid] = useState();
+  const [tags, setTags] = useState([]);
+  const [devs, setDevs] = useState([]);
+  const [appid, setAppid] = useState(-1);
+  const { width } = useWindowDimensions();
 
   function handleBackground(img) {
     setBackgroundImage(img);
@@ -30,10 +32,6 @@ function App() {
   var bgTheme = extendTheme({
     styles: {
       global: props => ({
-        '.search-container': {
-          position: searchTerm !== undefined ? 'relative' : 'fixed',
-          top: '50%',
-        },
         '.game-list, #game-details': {
           backgroundColor: 'rgba(0,0,0,0.2)',
         },
@@ -53,10 +51,9 @@ function App() {
           left: '0',
           zIndex: '1000',
         },
-        '#recommendation-tags': {
-          minHeight: '10vh',
-          overflow: 'none',
-          zIndex: '900',
+        '#search-input': {
+          width: "100%",
+          margin: "1"
         },
         body: {
           backgroundColor: '#252930',
@@ -65,6 +62,7 @@ function App() {
           backgroundPosition: 'top',
           backgroundRepeat: 'no-repeat',
           backgroundAttachment: 'fixed',
+          maxWidth: "100%"
         },
       }),
     },
@@ -84,6 +82,7 @@ function App() {
               devs={devs}
               appid={appid}
               setBackgroundImage={handleBackground}
+              width={width}
             />
           </Route>
           <Route path="/tags">
@@ -100,11 +99,13 @@ function App() {
                 search={searchTerm}
                 setSearchTerm={setSearchTerm}
                 activeSearch={activeSearch}
+                tags={setTags}
                 setActiveSearch={setActiveSearch}
+                width={width}
               />
               {searchTerm ? (
                 <Text textAlign="right" fontSize="xs">
-                  Game not listed? Search by id
+                  Game not listed? Search by id (id:########)
                 </Text>
               ) : null}
             </VStack>
