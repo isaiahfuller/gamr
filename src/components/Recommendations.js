@@ -174,6 +174,7 @@ function Recommendations(props) {
           <Button
             isDisabled={!state.count}
             onClick={(e) => dispatch({ type: "decrement" })}
+            sx={{width: '100%'}}
           >
             Previous
           </Button>
@@ -181,6 +182,7 @@ function Recommendations(props) {
           <Button
             isDisabled={state.count === games.length - 1}
             onClick={(e) => dispatch({ type: "increment" })}
+            sx={{width: '100%'}}
           >
             Next
           </Button>
