@@ -33,7 +33,11 @@ function App() {
     styles: {
       global: (props) => ({
         ".game-list, #game-details": {
-          backgroundColor: "rgba(0,0,0,0.2)",
+          backgroundColor: "rgba(0,0,0,0.25)",
+          borderRadius: '5px',
+          marginTop: '2',
+          boxShadow: 'base',
+          padding: '2'
         },
         ".results-load": {
           position: "fixed",

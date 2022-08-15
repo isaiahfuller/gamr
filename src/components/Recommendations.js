@@ -25,6 +25,10 @@ function init(initialCount) {
   return { count: initialCount };
 }
 
+function wordFilter(word) {
+  return word.replace("．", ".").replace("＄", "$");
+}
+
 function reducer(state, action) {
   switch (action.type) {
     case "increment":
@@ -107,13 +111,7 @@ function Recommendations(props) {
   } else {
     return (
       <Container maxW="40em">
-        <Flex
-          id="game-details"
-          {...handlers}
-          direction="column"
-          minHeight="100%"
-          justify="center"
-        >
+        <Flex id="game-details" {...handlers} direction="column">
           <Link
             href={`https://store.steampowered.com/app/${
               games[state.count].appid
@@ -122,12 +120,13 @@ function Recommendations(props) {
             isExternal
           >
             <Heading margin="1">
-              {games[state.count].name}
+              {wordFilter(games[state.count].name)}
               <ExternalLinkIcon mx="2px" />
             </Heading>
           </Link>
           <Text fontSize="xs" as="i" padding="1">
-            {games[state.count].developer} • {games[state.count].publisher}
+            {wordFilter(games[state.count].developer)} •{" "}
+            {wordFilter(games[state.count].publisher)}
           </Text>
           <Image
             src={games[state.count].steam[0].header_image}
@@ -143,7 +142,7 @@ function Recommendations(props) {
           <Text paddingTop="1" margin="auto" marginLeft="5" marginRight="5">
             {games[state.count].steam[0].short_description}
           </Text>
-          <Divider marginY="1" />
+          <Spacer />
           <Flex direction={width > 700 ? "row" : "column"}>
             {Object.keys(games[state.count].tags).length > 0 ? (
               <Box id="recommendation-tags">
@@ -164,17 +163,17 @@ function Recommendations(props) {
             </Box>
           </Flex>
         </Flex>
+        <Divider marginY="2" />
         <ButtonGroup
           id="recommendation-buttons"
           isAttached
           width="100%"
-          marginTop="5"
-          marginBottom="5"
+          boxShadow="base"
         >
           <Button
             isDisabled={!state.count}
             onClick={(e) => dispatch({ type: "decrement" })}
-            sx={{width: '100%'}}
+            width="100%"
           >
             Previous
           </Button>
@@ -182,7 +181,7 @@ function Recommendations(props) {
           <Button
             isDisabled={state.count === games.length - 1}
             onClick={(e) => dispatch({ type: "increment" })}
-            sx={{width: '100%'}}
+            width="100%"
           >
             Next
           </Button>
