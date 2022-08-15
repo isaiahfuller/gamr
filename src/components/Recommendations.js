@@ -192,26 +192,7 @@ function Recommendations(props) {
             </Button>
           )}
           <Divider orientation="vertical" />
-          {state.count === games.length - 1 ? (
-            <Button
-              isDisabled
-              onClick={e => {
-                dispatch({ type: 'increment' });
-              }}
-              isFullWidth
-            >
-              Next
-            </Button>
-          ) : (
-            <Button
-              onClick={e => {
-                dispatch({ type: 'increment' });
-              }}
-              isFullWidth
-            >
-              Next
-            </Button>
-          )}
+          <Button isDisabled={state.count === games.length - 1} onClick={e => dispatch({type: 'increment'})}>Next</Button>
         </ButtonGroup>
       </Container>
     );

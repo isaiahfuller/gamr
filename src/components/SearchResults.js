@@ -82,7 +82,7 @@ function SearchResults(props) {
     return <SpinnerLoad />;
   } else {
     return (
-      <Collapse in={!loading} reverse>
+      <Collapse in={!loading}>
         <Container maxWidth="70ch">
           <Accordion className="game-list" allowToggle>
             {resultsData.map(game => {
