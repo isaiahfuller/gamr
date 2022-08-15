@@ -13,12 +13,12 @@ import {
   Divider,
   Spacer,
   Link,
-} from '@chakra-ui/react';
-import { Link as RouterLink } from 'react-router-dom';
-import { ExternalLinkIcon } from '@chakra-ui/icons';
-import React, { useEffect, useReducer, useState } from 'react';
-import { useSwipeable } from 'react-swipeable';
-import SpinnerLoad from './SpinnerLoad';
+} from "@chakra-ui/react";
+import { Link as RouterLink } from "react-router-dom";
+import { ExternalLinkIcon } from "@chakra-ui/icons";
+import React, { useEffect, useReducer, useState } from "react";
+import { useSwipeable } from "react-swipeable";
+import SpinnerLoad from "./SpinnerLoad";
 const { REACT_APP_SERVER } = process.env;
 
 function init(initialCount) {
@@ -27,12 +27,12 @@ function init(initialCount) {
 
 function reducer(state, action) {
   switch (action.type) {
-    case 'increment':
+    case "increment":
       return { count: state.count + 1 };
-    case 'decrement':
+    case "decrement":
       if (state.count === 0) return { count: state.count };
       return { count: state.count - 1 };
-    case 'reset':
+    case "reset":
       return init(action.payload);
     default:
       throw new Error();
@@ -45,8 +45,8 @@ function Recommendations(props) {
   const [isLoading, setIsLoading] = useBoolean(true);
   const [state, dispatch] = useReducer(reducer, 0, init);
   const handlers = useSwipeable({
-    onSwipedRight: e => dispatch({ type: 'decrement' }),
-    onSwipedLeft: e => dispatch({ type: 'increment' }),
+    onSwipedRight: (e) => dispatch({ type: "decrement" }),
+    onSwipedLeft: (e) => dispatch({ type: "increment" }),
     trackMouse: true,
     preventDefaultTouchmoveEvent: true,
   });
@@ -63,30 +63,30 @@ function Recommendations(props) {
       appid: appid,
     });
     // Split developers and publishers into their own arrays
-    devs.forEach(dev => {
-      if (dev.includes('dev-')) {
-        setSortedDevs(prev => {
-          prev['developer'].push(dev.replace('dev-', ''));
+    devs.forEach((dev) => {
+      if (dev.includes("dev-")) {
+        setSortedDevs((prev) => {
+          prev["developer"].push(dev.replace("dev-", ""));
           return prev;
         });
       }
-      if (dev.includes('pub-')) {
-        setSortedDevs(prev => {
-          prev['publisher'].push(dev.replace('pub-', ''));
+      if (dev.includes("pub-")) {
+        setSortedDevs((prev) => {
+          prev["publisher"].push(dev.replace("pub-", ""));
           return prev;
         });
       }
     });
     // Get list of games to recommend. All at once even though displayed one by one
     fetch(`http://${REACT_APP_SERVER}/steam/recc`, {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify(body),
     })
-      .then(res => res.json())
-      .then(game => {
+      .then((res) => res.json())
+      .then((game) => {
         setGames(game);
         setIsLoading.off();
       }); // eslint-disable-next-line
@@ -131,20 +131,20 @@ function Recommendations(props) {
           </Text>
           <Image
             src={games[state.count].steam[0].header_image}
-            alt={games[state.count].name + ' header'}
+            alt={games[state.count].name + " header"}
             paddingLeft="5"
             paddingRight="5"
             margin="auto"
             marginLeft="5"
             marginRight="5"
             alignSelf="center"
-            style={{ touchAction: 'none' }}
+            style={{ touchAction: "none" }}
           />
           <Text paddingTop="1" margin="auto" marginLeft="5" marginRight="5">
             {games[state.count].steam[0].short_description}
           </Text>
           <Divider marginY="1" />
-          <Flex direction={width > 700 ? 'row' : 'column'}>
+          <Flex direction={width > 700 ? "row" : "column"}>
             {Object.keys(games[state.count].tags).length > 0 ? (
               <Box id="recommendation-tags">
                 {Object.keys(games[state.count].tags).map((tag, i) => {
@@ -171,28 +171,19 @@ function Recommendations(props) {
           marginTop="5"
           marginBottom="5"
         >
-          {state.count === 0 ? (
-            <Button
-              isDisabled
-              onClick={e => {
-                dispatch({ type: 'decrement' });
-              }}
-              isFullWidth
-            >
-              Previous
-            </Button>
-          ) : (
-            <Button
-              onClick={e => {
-                dispatch({ type: 'decrement' });
-              }}
-              isFullWidth
-            >
-              Previous
-            </Button>
-          )}
+          <Button
+            isDisabled={!state.count}
+            onClick={(e) => dispatch({ type: "decrement" })}
+          >
+            Previous
+          </Button>
           <Divider orientation="vertical" />
-          <Button isDisabled={state.count === games.length - 1} onClick={e => dispatch({type: 'increment'})}>Next</Button>
+          <Button
+            isDisabled={state.count === games.length - 1}
+            onClick={(e) => dispatch({ type: "increment" })}
+          >
+            Next
+          </Button>
         </ButtonGroup>
       </Container>
     );
