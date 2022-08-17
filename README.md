@@ -1,1 +1,1 @@
-# gamr
+# [GAMR](https://isaiah.moe/gamr)
