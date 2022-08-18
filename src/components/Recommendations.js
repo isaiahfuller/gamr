@@ -14,7 +14,7 @@ import {
   Spacer,
   Link,
 } from "@chakra-ui/react";
-import { Link as RouterLink, useLocation } from "react-router-dom";
+import { Link as RouterLink } from "react-router-dom";
 import { ExternalLinkIcon } from "@chakra-ui/icons";
 import React, { useEffect, useReducer, useState } from "react";
 import { useSwipeable } from "react-swipeable";
@@ -47,8 +47,6 @@ function Recommendations({ tags, devs, appid, setBackgroundImage, width }) {
   const [games, setGames] = useState();
   const [isLoading, setIsLoading] = useBoolean(true);
   const [state, dispatch] = useReducer(reducer, 0, init);
-  console.log("location", window.location);
-  console.log("location", useLocation());
   const handlers = useSwipeable({
     onSwipedRight: (e) => dispatch({ type: "decrement" }),
     onSwipedLeft: (e) => dispatch({ type: "increment" }),
@@ -83,7 +81,7 @@ function Recommendations({ tags, devs, appid, setBackgroundImage, width }) {
       }
     });
     // Get list of games to recommend. All at once even though displayed one by one
-    fetch(`http://${REACT_APP_SERVER}/steam/recc`, {
+    fetch(`https://${REACT_APP_SERVER}/steam/recc`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

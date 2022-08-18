@@ -14,7 +14,6 @@ import {
   Stack,
 } from "@chakra-ui/react";
 import { AddIcon, CloseIcon } from "@chakra-ui/icons";
-import fetch from "node-fetch";
 import { React, useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import SpinnerLoad from "./SpinnerLoad";
@@ -32,7 +31,7 @@ function TagsPage({ handleBackground, stateTags, stateDevs, appid }) {
   const [isLoading, setIsLoading] = useBoolean(true);
   const [tagsSet, setTagsSet] = useBoolean(false);
   const [activeDevs, setActiveDevs] = useState([]);
-  const url = `http://${REACT_APP_SERVER}/steam/appid/${query.get("appid")}`;
+  const url = `https://${REACT_APP_SERVER}/steam/appid/${query.get("appid")}`;
 
   useEffect(() => {
     fetch(url)
