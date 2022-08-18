@@ -10,7 +10,7 @@ import {
   useBoolean,
 } from "@chakra-ui/react";
 import { Select } from "chakra-react-select";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import tagsFile from "../data/tags.json";
 
 const idRegex = /id:\d/;
@@ -25,6 +25,7 @@ function Search({
 }) {
   const { colorMode, toggleColorMode } = useColorMode();
   const [advancedSearch, setAdvancedSearch] = useBoolean(false);
+  const navigate = useNavigate();
   const tags = tagsFile.response.tags.sort((first, second) => {
     if (first.name.toLowerCase() > second.name.toLowerCase()) return 1;
     else return -1;
@@ -48,9 +49,9 @@ function Search({
 
   function handleSubmit(event) {
     event.preventDefault();
-    if (search.match(idRegex))
-      window.location.href = `/tags?appid=${search.split(":")[1]}`;
-    else setActiveSearch.on();
+    if (search.match(idRegex)) {
+      navigate(`./tags?appid=${search.split(":")[1]}`);
+    } else setActiveSearch.on();
   }
 
   function handleSearch(e) {
