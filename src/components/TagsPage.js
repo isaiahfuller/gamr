@@ -12,20 +12,19 @@ import {
   Button,
   Checkbox,
   Stack,
-} from '@chakra-ui/react';
-import { AddIcon, CloseIcon } from '@chakra-ui/icons';
-import fetch from 'node-fetch';
-import { React, useEffect, useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import SpinnerLoad from './SpinnerLoad';
+} from "@chakra-ui/react";
+import { AddIcon, CloseIcon } from "@chakra-ui/icons";
+import fetch from "node-fetch";
+import { React, useEffect, useState } from "react";
+import { Link, useLocation } from "react-router-dom";
+import SpinnerLoad from "./SpinnerLoad";
 const { REACT_APP_SERVER } = process.env;
 
 function useQuery() {
   return new URLSearchParams(useLocation().search);
 }
 
-function TagsPage(props) {
-  const { handleBackground, stateTags, stateDevs, appid } = props;
+function TagsPage({ handleBackground, stateTags, stateDevs, appid }) {
   let query = useQuery();
   const [gameDetails, setGameDetails] = useState({});
   const [activeTags, setActiveTags] = useState({});
@@ -33,12 +32,12 @@ function TagsPage(props) {
   const [isLoading, setIsLoading] = useBoolean(true);
   const [tagsSet, setTagsSet] = useBoolean(false);
   const [activeDevs, setActiveDevs] = useState([]);
-  const url = `http://${REACT_APP_SERVER}/steam/appid/${query.get('appid')}`;
+  const url = `http://${REACT_APP_SERVER}/steam/appid/${query.get("appid")}`;
 
   useEffect(() => {
     fetch(url)
-      .then(res => res.json())
-      .then(res => {
+      .then((res) => res.json())
+      .then((res) => {
         setGameDetails(res._doc);
         setInactiveTags(res._doc.tags);
         setIsLoading.off();
@@ -51,12 +50,12 @@ function TagsPage(props) {
       return (
         <Box className="tags-select">
           {Object.keys(tags).map((tag, index) => {
-            const handleTagClick = e => {
-              firstSet(prev => {
+            const handleTagClick = (e) => {
+              firstSet((prev) => {
                 prev[`${tag}`] = tags[`${tag}`];
                 return prev;
               });
-              secondSet(prev => {
+              secondSet((prev) => {
                 const { [tag]: removed, ...tempArray } = prev;
                 return tempArray;
               });
@@ -66,9 +65,9 @@ function TagsPage(props) {
                 onClick={handleTagClick}
                 className="game-tag"
                 margin="1"
-                variant={icon ? 'subtle' : 'solid'}
-                colorScheme={icon ? 'gray' : 'green'}
-                size={icon ? 'md' : 'lg'}
+                variant={icon ? "subtle" : "solid"}
+                colorScheme={icon ? "gray" : "green"}
+                size={icon ? "md" : "lg"}
                 key={index}
               >
                 <TagLeftIcon as={icon ? AddIcon : CloseIcon} />
@@ -88,14 +87,14 @@ function TagsPage(props) {
       appid(gameDetails.appid);
       stateDevs(activeDevs);
     };
-    const handleCheckbox = e => {
+    const handleCheckbox = (e) => {
       if (e.target.checked)
-        setActiveDevs(prev => {
+        setActiveDevs((prev) => {
           prev.push(e.target.value);
           return prev;
         });
       else
-        setActiveDevs(prev => {
+        setActiveDevs((prev) => {
           prev.splice(prev.indexOf(e.target.value), 1);
           return prev;
         });

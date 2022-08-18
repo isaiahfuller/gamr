@@ -1,5 +1,5 @@
 import { React, useState } from "react";
-import { BrowserRouter as HashRouter, Routes, Route } from "react-router-dom";
+import { Routes, Route, HashRouter as BrowserRouter } from "react-router-dom";
 import {
   ChakraProvider,
   extendTheme,
@@ -21,7 +21,6 @@ function App() {
   const [devs, setDevs] = useState([]);
   const [appid, setAppid] = useState(-1);
   const { width } = useWindowDimensions();
-
   function handleBackground(img) {
     setBackgroundImage(img);
     return () => {
@@ -34,10 +33,10 @@ function App() {
       global: (props) => ({
         ".game-list, #game-details": {
           backgroundColor: "rgba(0,0,0,0.25)",
-          borderRadius: '5px',
-          marginTop: '2',
-          boxShadow: 'base',
-          padding: '2'
+          borderRadius: "5px",
+          marginTop: "2",
+          boxShadow: "base",
+          padding: "2",
         },
         ".results-load": {
           position: "fixed",
@@ -74,10 +73,10 @@ function App() {
 
   return (
     <ChakraProvider theme={bgTheme}>
-      <HashRouter>
+      <BrowserRouter>
         <Routes>
           <Route
-            path="/recommendations"
+            path="recommendations"
             element={
               <Recommendations
                 tags={tags}
@@ -89,7 +88,7 @@ function App() {
             }
           ></Route>
           <Route
-            path="/tags"
+            path="tags"
             element={
               <TagsPage
                 handleBackground={handleBackground}
@@ -100,19 +99,19 @@ function App() {
             }
           ></Route>
           <Route
-            path="/"
+            path=""
             element={
               <VStack align="center" justify="center">
                 <Search
                   search={searchTerm}
                   setSearchTerm={setSearchTerm}
                   activeSearch={activeSearch}
-                  tags={setTags}
+                  setTags={setTags}
                   setActiveSearch={setActiveSearch}
                   width={width}
                 />
                 {searchTerm ? (
-                  <Text textAlign="right" fontSize="xs">
+                  <Text fontSize="xs">
                     Game not listed? Search by id (id:########)
                   </Text>
                 ) : null}
@@ -127,7 +126,7 @@ function App() {
             }
           ></Route>
         </Routes>
-      </HashRouter>
+      </BrowserRouter>
     </ChakraProvider>
   );
 }

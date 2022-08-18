@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect } from "react";
 import {
   Input,
   Container,
@@ -8,14 +8,21 @@ import {
   Flex,
   useColorMode,
   useBoolean,
-} from '@chakra-ui/react';
-import { Select } from 'chakra-react-select';
-import { Link } from 'react-router-dom';
-import tagsFile from '../data/tags.json';
+} from "@chakra-ui/react";
+import { Select } from "chakra-react-select";
+import { Link } from "react-router-dom";
+import tagsFile from "../data/tags.json";
 
-function Search(props) {
-  const setTags = props.tags;
-  const { width } = props;
+const idRegex = /id:\d/;
+
+function Search({
+  setTags,
+  width,
+  search,
+  setActiveSearch,
+  activeSearch,
+  setSearchTerm,
+}) {
   const { colorMode, toggleColorMode } = useColorMode();
   const [advancedSearch, setAdvancedSearch] = useBoolean(false);
   const tags = tagsFile.response.tags.sort((first, second) => {
@@ -25,15 +32,15 @@ function Search(props) {
   let tagSelectOptions = [];
 
   useEffect(() => {
-    tags.forEach(e => {
+    tags.forEach((e) => {
       tagSelectOptions.push({ label: e.name, value: e.name });
     });
-    if (colorMode === 'light') toggleColorMode();
+    if (colorMode === "light") toggleColorMode();
   });
 
   function handleTagUpdate(tags) {
     let temp = [];
-    tags.forEach(e => {
+    tags.forEach((e) => {
       temp.push(e.value);
     });
     setTags(temp);
@@ -41,18 +48,25 @@ function Search(props) {
 
   function handleSubmit(event) {
     event.preventDefault();
-    props.setActiveSearch.on();
+    if (search.match(idRegex))
+      window.location.href = `/tags?appid=${search.split(":")[1]}`;
+    else setActiveSearch.on();
   }
+
   function handleSearch(e) {
-    if (props.activeSearch) props.setActiveSearch.off();
-    props.setSearchTerm(e.target.value);
+    if (activeSearch) setActiveSearch.off();
+    setSearchTerm(e.target.value);
   }
 
   return (
-    <Container id="search-container" maxWidth="120ch" style={{marginTop: '1em'}}>
+    <Container
+      id="search-container"
+      maxWidth="120ch"
+      style={{ marginTop: "1em" }}
+    >
       <form onSubmit={handleSubmit}>
         <FormControl>
-          <Flex direction={width > 700 ? 'row' : 'column'}>
+          <Flex direction={width > 700 ? "row" : "column"}>
             {!advancedSearch ? (
               <Input
                 name="game-search"
@@ -61,6 +75,7 @@ function Search(props) {
                 onInput={handleSearch}
                 disabled={advancedSearch}
                 id="search-input"
+                value={search}
               />
             ) : (
               <Select
@@ -90,7 +105,7 @@ function Search(props) {
                 colorScheme="blue"
                 onClick={setAdvancedSearch.toggle}
               >
-                {!advancedSearch ? 'Tags' : 'Game'}
+                {!advancedSearch ? "Tags" : "Game"}
               </Button>
             </ButtonGroup>
           </Flex>

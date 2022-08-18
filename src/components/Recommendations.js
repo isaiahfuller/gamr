@@ -14,7 +14,7 @@ import {
   Spacer,
   Link,
 } from "@chakra-ui/react";
-import { Link as RouterLink } from "react-router-dom";
+import { Link as RouterLink, useLocation } from "react-router-dom";
 import { ExternalLinkIcon } from "@chakra-ui/icons";
 import React, { useEffect, useReducer, useState } from "react";
 import { useSwipeable } from "react-swipeable";
@@ -43,11 +43,12 @@ function reducer(state, action) {
   }
 }
 
-function Recommendations(props) {
-  const { tags, devs, appid, setBackgroundImage, width } = props;
+function Recommendations({ tags, devs, appid, setBackgroundImage, width }) {
   const [games, setGames] = useState();
   const [isLoading, setIsLoading] = useBoolean(true);
   const [state, dispatch] = useReducer(reducer, 0, init);
+  console.log("location", window.location);
+  console.log("location", useLocation());
   const handlers = useSwipeable({
     onSwipedRight: (e) => dispatch({ type: "decrement" }),
     onSwipedLeft: (e) => dispatch({ type: "increment" }),
@@ -110,8 +111,13 @@ function Recommendations(props) {
     );
   } else {
     return (
-      <Container maxW="40em" centerContent height='100vh' justifyContent='space-around'>
-        <Flex id="game-details" {...handlers} direction="column" height='85%'>
+      <Container
+        maxW="40em"
+        centerContent
+        height="100vh"
+        justifyContent="space-around"
+      >
+        <Flex id="game-details" {...handlers} direction="column" height="85%">
           <Link
             href={`https://store.steampowered.com/app/${
               games[state.count].appid
@@ -168,7 +174,7 @@ function Recommendations(props) {
           isAttached
           width="100%"
           boxShadow="base"
-          marginBottom='0.5em'
+          marginBottom="0.5em"
         >
           <Button
             isDisabled={!state.count}
@@ -177,7 +183,7 @@ function Recommendations(props) {
           >
             Previous
           </Button>
-          <Divider orientation="vertical" marginX='0.5' />
+          <Divider orientation="vertical" marginX="0.5" />
           <Button
             isDisabled={state.count === games.length - 1}
             onClick={(e) => dispatch({ type: "increment" })}
