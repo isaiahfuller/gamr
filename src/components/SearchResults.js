@@ -13,7 +13,6 @@ import {
   HStack,
 } from "@chakra-ui/react";
 import GameDetails from "./GameDetails";
-import fetch from "node-fetch";
 import SpinnerLoad from "./SpinnerLoad";
 const { REACT_APP_SERVER } = process.env;
 
@@ -34,7 +33,7 @@ function SearchResults({ searchTerm, backgroundImage, setBackgroundImage }) {
         if (searchTerm === "") setLoading.off();
         else
           fetch(
-            `http://${REACT_APP_SERVER}/steam/name/${wordFilter(searchTerm)}`
+            `https://${REACT_APP_SERVER}/steam/name/${wordFilter(searchTerm)}`
           )
             .then((res) => res.json())
             .then((games) => {
