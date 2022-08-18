@@ -49,7 +49,7 @@ function Search(props) {
   }
 
   return (
-    <Container id="search-container" maxWidth="120ch">
+    <Container id="search-container" maxWidth="120ch" style={{marginTop: '1em'}}>
       <form onSubmit={handleSubmit}>
         <FormControl>
           <Flex direction={width > 700 ? 'row' : 'column'}>

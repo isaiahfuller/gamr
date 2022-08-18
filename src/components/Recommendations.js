@@ -110,8 +110,8 @@ function Recommendations(props) {
     );
   } else {
     return (
-      <Container maxW="40em">
-        <Flex id="game-details" {...handlers} direction="column">
+      <Container maxW="40em" centerContent height='100vh' justifyContent='space-around'>
+        <Flex id="game-details" {...handlers} direction="column" height='85%'>
           <Link
             href={`https://store.steampowered.com/app/${
               games[state.count].appid
@@ -163,12 +163,12 @@ function Recommendations(props) {
             </Box>
           </Flex>
         </Flex>
-        <Divider marginY="2" />
         <ButtonGroup
           id="recommendation-buttons"
           isAttached
           width="100%"
           boxShadow="base"
+          marginBottom='0.5em'
         >
           <Button
             isDisabled={!state.count}
@@ -177,7 +177,7 @@ function Recommendations(props) {
           >
             Previous
           </Button>
-          <Divider orientation="vertical" />
+          <Divider orientation="vertical" marginX='0.5' />
           <Button
             isDisabled={state.count === games.length - 1}
             onClick={(e) => dispatch({ type: "increment" })}
