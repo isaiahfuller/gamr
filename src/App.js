@@ -20,6 +20,7 @@ function App() {
   const [tags, setTags] = useState([]);
   const [devs, setDevs] = useState([]);
   const [appid, setAppid] = useState(-1);
+  const [locale, setLocale] = useState("en-US");
   const { width } = useWindowDimensions();
   function handleBackground(img) {
     setBackgroundImage(img);
@@ -109,6 +110,8 @@ function App() {
                   setTags={setTags}
                   setActiveSearch={setActiveSearch}
                   width={width}
+                  locale={locale}
+                  setLocale={setLocale}
                 />
                 {searchTerm ? (
                   <Text fontSize="xs">

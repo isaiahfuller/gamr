@@ -12,6 +12,7 @@ import {
 import { Select } from "chakra-react-select";
 import { Link, useNavigate } from "react-router-dom";
 import tagsFile from "../data/tags.json";
+import LocaleDropdown from "./LocaleDropdown";
 
 const idRegex = /id:\d/;
 
@@ -22,6 +23,8 @@ function Search({
   setActiveSearch,
   activeSearch,
   setSearchTerm,
+  locale,
+  setLocale,
 }) {
   const { colorMode, toggleColorMode } = useColorMode();
   const [advancedSearch, setAdvancedSearch] = useBoolean(false);
@@ -109,6 +112,7 @@ function Search({
                 {!advancedSearch ? "Tags" : "Game"}
               </Button>
             </ButtonGroup>
+            <LocaleDropdown locale={locale} setLocale={setLocale}/>
           </Flex>
         </FormControl>
       </form>
