@@ -12,7 +12,7 @@ async function getSteamJSON() {
       var totalGames = 0;
       var dir = `${__dirname}/json`;
       if (!fs.existsSync(dir)) {
-        fs.mkdirSync(dir, 0744);
+        fs.mkdirSync(dir, 0o744);
       }
       for (let i = 0; i < Math.ceil(games.length / 10000); i++) {
         let current = [];
