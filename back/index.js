@@ -1,9 +1,8 @@
 require('dotenv').config();
-const _ = require('lodash');
+
 const Update = require('./import');
 const mongoose = require('mongoose');
 const express = require('express');
-const SteamGames = require('./models/steamGame');
 const getUpdateById = require('./routes/getUpdateById');
 const getGameByID = require('./routes/getGameById');
 const getGameByName = require('./routes/getGameByName');
