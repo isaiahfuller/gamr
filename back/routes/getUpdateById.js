@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const Steam = require('./steamspy');
-const SteamGames = require('./models/steamGame');
+const Steam = require('../steamspy');
+const SteamGames = require('../models/steamGame');
 
 // This technically should be a PUT request
 // todo: change to PUT @isaiahfuller @dragonfleas

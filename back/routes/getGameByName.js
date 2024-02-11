@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const SteamGames = require('./models/steamGame');
+const SteamGames = require('../models/steamGame');
 const relevanceSort = require('../utils/relevanceSort');
 
 router.get('/steam/name/:name', (req, res) => {

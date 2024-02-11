@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const SteamGames = require('./models/steamGame');
+const SteamGames = require('../models/steamGame');
 
 router.post('/steam/recc', (req, res) => {
     const { developer, publisher, tags, appid } = req.body;

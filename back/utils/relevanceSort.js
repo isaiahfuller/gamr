@@ -1,4 +1,4 @@
-import _ from "lodash";
+const _ = require('lodash');
 
 function relevanceSort(array, searchTerm) {
     searchTerm = searchTerm.trim();

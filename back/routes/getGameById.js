@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const SteamGames = require('./models/steamGame');
+const SteamGames = require('../models/steamGame');
 
 router.get('/steam/appid/:id', (req, res) => {
     var id = req.params.id;
