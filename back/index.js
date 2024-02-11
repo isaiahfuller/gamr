@@ -1,12 +1,13 @@
 require('dotenv').config();
 const _ = require('lodash');
 const express = require('express');
-const Steam = require('./steamspy');
 const PORT = process.env.PORT || 3001;
 const MONGODB_URL = process.env.MONGO || 'mongodb://localhost:27017/gamr';
 const mongoose = require('mongoose');
 const Update = require('./import');
 const SteamGames = require('./models/steamGame');
+const getUpdateById = require('./routes/getUpdateById');
+const getGameByID = require('./routes/getGameById');
 
 var status = 'working';
 
@@ -82,86 +83,15 @@ app.use((req, res, next) => {
   );
   next();
 });
+
 app.use(express.json());
 
 app.get('/api/status', (req, res) => {
   res.json({ message: status });
 });
 
-app.get('/steam/updatebyid/:id', (req, res) => {
-  var params = req.params.id.split('&');
-  var force = false;
-  if (params[1] === 'force') force = true;
-  var now = new Date();
-  var id = params[0];
-  SteamGames.findOne({ appid: id }, (err, searchedGame) => {
-    if (err) return console.error(err);
-    if (
-      !searchedGame ||
-      now.getDate() - 7 > new Date(searchedGame.last_updated).getDate() ||
-      !searchedGame.last_updated ||
-      searchedGame.invalid ||
-      force
-    ) {
-      Steam.getGameByID(id)
-        .then(game => {
-          if (game) {
-            if (searchedGame) {
-              var result = Object.assign(game, {
-                invalid: false,
-                last_updated: now,
-              });
-              SteamGames.findOneAndUpdate({ appid: id }, result)
-                .then(updated => {
-                  // console.log("Updated", id);
-                  res.json(game);
-                  return game;
-                })
-                .catch(console.error);
-            } else {
-              var result = new SteamGames(
-                Object.assign(game, {
-                  invalid: false,
-                  last_updated: now,
-                })
-              );
-              result.save(err => {
-                if (err) {
-                  res.set('Connection', 'close');
-                  return console.error(err);
-                }
-                res.json({ update: 'success' });
-                return game;
-              });
-            }
-          }
-        })
-        .catch(console.error);
-    } else {
-      // console.log(`Found game with id ${id}`);
-      res.set('Connection', 'close');
-      let found = Object.assign({ found: true }, searchedGame);
-      res.json(found);
-      return searchedGame;
-    }
-  });
-});
-
-app.get('/steam/appid/:id', (req, res) => {
-  var now = new Date();
-  var id = req.params.id;
-  SteamGames.findOne({ appid: id }, (err, searchedGame) => {
-    if (err) return console.error(err);
-    if (!searchedGame) {
-      res.status(404);
-    }
-    console.log(`Found game with id ${id}`);
-    res.set('Connection', 'close');
-    let found = Object.assign({ found: true }, searchedGame);
-    res.json(found);
-    return searchedGame;
-  });
-});
+app.use(getUpdateById);
+app.use(getGameByID);
 
 app.get('/steam/name/:name', (req, res) => {
   try {
