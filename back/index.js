@@ -6,7 +6,7 @@ const PORT = process.env.PORT || 3001;
 const MONGODB_URL = process.env.MONGO || 'mongodb://localhost:27017/gamr';
 const mongoose = require('mongoose');
 const Update = require('./import');
-const Schema = mongoose.Schema;
+const SteamGames = require('./models/steamGame');
 
 var status = 'working';
 
@@ -71,34 +71,6 @@ db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function () {
   console.log('DB connected');
 });
-const steamGameSchema = new mongoose.Schema({
-  appid: Number,
-  name: String,
-  developer: String,
-  description: String,
-  publisher: String,
-  score_rank: String,
-  positive: Number,
-  negative: Number,
-  userscore: Number,
-  owners: String,
-  average_forever: Number,
-  average_2eeks: Number,
-  median_forever: Number,
-  median_2weeks: Number,
-  price: String,
-  initialprice: Number,
-  discount: Number,
-  ccu: Number,
-  languages: String,
-  genre: String,
-  tags: Schema.Types.Mixed,
-  steam: [Schema.Types.Mixed],
-  last_updated: Date,
-  invalid: Boolean,
-});
-
-const SteamGames = mongoose.model('games', steamGameSchema);
 
 const app = express();
 
