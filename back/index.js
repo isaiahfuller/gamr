@@ -8,6 +8,7 @@ const getUpdateById = require('./routes/getUpdateById');
 const getGameByID = require('./routes/getGameById');
 const getGameByName = require('./routes/getGameByName');
 const postRecc = require('./routes/postRecc');
+const healthcheck = require('./routes/healthcheck');
 
 const PORT = process.env.PORT || 3001;
 const MONGODB_URL = process.env.MONGO || 'mongodb://localhost:27017/gamr';
@@ -89,14 +90,11 @@ app.use((req, res, next) => {
 
 app.use(express.json());
 
-app.get('/api/status', (req, res) => {
-  res.json({ message: status });
-});
-
 app.use(getUpdateById);
 app.use(getGameByID);
 app.use(getGameByName)
 app.use(postRecc);
+app.use(healthcheck);
 
 app.listen(PORT, () => {
   console.log(`Server listening on ${PORT}`);
