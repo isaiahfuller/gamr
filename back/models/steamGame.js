@@ -29,4 +29,4 @@ const steamGameSchema = new Schema({
   });
   
 
-export default model('games', steamGameSchema);
+module.exports = model('games', steamGameSchema);
