@@ -1,13 +1,15 @@
 require('dotenv').config();
 const _ = require('lodash');
-const express = require('express');
-const PORT = process.env.PORT || 3001;
-const MONGODB_URL = process.env.MONGO || 'mongodb://localhost:27017/gamr';
-const mongoose = require('mongoose');
 const Update = require('./import');
+const mongoose = require('mongoose');
+const express = require('express');
 const SteamGames = require('./models/steamGame');
 const getUpdateById = require('./routes/getUpdateById');
 const getGameByID = require('./routes/getGameById');
+const getGameByName = require('./routes/getGameByName');
+
+const PORT = process.env.PORT || 3001;
+const MONGODB_URL = process.env.MONGO || 'mongodb://localhost:27017/gamr';
 
 var status = 'working';
 
@@ -92,23 +94,7 @@ app.get('/api/status', (req, res) => {
 
 app.use(getUpdateById);
 app.use(getGameByID);
-
-app.get('/steam/name/:name', (req, res) => {
-  try {
-    SteamGames.find({
-      name: new RegExp(`${req.params.name}+`, 'i'),
-      'steam.type': 'game',
-    })
-      .limit(100)
-      .exec((err, games) => {
-        if (err) return console.error(err);
-        res.json(relevanceSort(games, req.params.name));
-        return res;
-      });
-  } catch (error) {
-    console.error(error);
-  }
-});
+app.use(getGameByName)
 
 app.post('/steam/recc', (req, res) => {
   const { developer, publisher, tags, appid } = req.body;
